@@ -1,0 +1,52 @@
+{
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/foreign-workers",
+      "handler": "foreign-workers.find",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/foreign-workers/count",
+      "handler": "foreign-workers.count",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/foreign-workers/:id",
+      "handler": "foreign-workers.findOne",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/foreign-workers",
+      "handler": "foreign-workers.create",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/foreign-workers/:id",
+      "handler": "foreign-workers.update",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/foreign-workers/:id",
+      "handler": "foreign-workers.delete",
+      "config": {
+        "policies": []
+      }
+    }
+  ]
+}
