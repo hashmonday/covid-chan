@@ -821,34 +821,39 @@ export default {
 
     createService: async function () {
       this.closeMessage()
-      await this.$strapi.find('services', {queue: this.queue, location: this.locationId}).then(async result => {
-        if (result.length === 0) {
-          await this.$strapi.create('services', {
-            person: this.id,
-            queue: this.queue,
-            location: this.locationId,
-            check_in: this.$dayjs().format('YYYY-MM-DD HH:mm')
-          }).then(async result => {
-            await this.$strapi.find('services', {
+      let countService = await this.$strapi.count('services', {
+        person: this.id,
+        location: this.locationId
+      })
+      if (countService == 0) {
+        await this.$strapi.find('services', {queue: this.queue, location: this.locationId}).then(async result => {
+          if (result.length === 0) {
+            await this.$strapi.create('services', {
               person: this.id,
               queue: this.queue,
-              location: this.locationId
-            }).then(result => {
-              this.services = result
-              this.closeServiceModal()
-              this.successMessages = 'ดำเนินการสร้างรายการเข้ารับบริการสำเร็จ'
+              location: this.locationId,
+              check_in: this.$dayjs().format('YYYY-MM-DD HH:mm')
+            }).then(async result => {
+              await this.$strapi.find('services', {
+                person: this.id,
+                location: this.locationId
+              }).then(result => {
+                this.services = result
+                this.closeServiceModal()
+                this.successMessages = 'ดำเนินการสร้างรายการเข้ารับบริการสำเร็จ'
+              }).catch(err => {
+                console.log(err)
+              })
             }).catch(err => {
               console.log(err)
             })
-          }).catch(err => {
-            console.log(err)
-          })
-        } else if (result.length === 1) {
-          this.errorServiceModal = `มีการจองคิวนี้แล้ว โดยผู้มาตรวจหมายเลข ${result[0]['person']['reference_number']}`
-        }
-      }).catch(err => {
-        console.log(err)
-      })
+          } else if (result.length === 1) {
+            this.errorServiceModal = `มีการจองคิวนี้แล้ว โดยผู้มาตรวจหมายเลข ${result[0]['person']['reference_number']}`
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      }
     },
 
     deleteService: async function () {
