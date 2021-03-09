@@ -2,48 +2,48 @@
   "routes": [
     {
       "method": "GET",
-      "path": "/covid-tests",
-      "handler": "covid-tests.find",
+      "path": "/nationalities",
+      "handler": "nationalities.find",
       "config": {
         "policies": []
       }
     },
     {
       "method": "GET",
-      "path": "/covid-tests/count",
-      "handler": "covid-tests.count",
+      "path": "/nationalities/count",
+      "handler": "nationalities.count",
       "config": {
         "policies": []
       }
     },
     {
       "method": "GET",
-      "path": "/covid-tests/:id",
-      "handler": "covid-tests.findOne",
+      "path": "/nationalities/:id",
+      "handler": "nationalities.findOne",
       "config": {
         "policies": []
       }
     },
     {
       "method": "POST",
-      "path": "/covid-tests",
-      "handler": "covid-tests.create",
+      "path": "/nationalities",
+      "handler": "nationalities.create",
       "config": {
         "policies": []
       }
     },
     {
       "method": "PUT",
-      "path": "/covid-tests/:id",
-      "handler": "covid-tests.update",
+      "path": "/nationalities/:id",
+      "handler": "nationalities.update",
       "config": {
         "policies": []
       }
     },
     {
       "method": "DELETE",
-      "path": "/covid-tests/:id",
-      "handler": "covid-tests.delete",
+      "path": "/nationalities/:id",
+      "handler": "nationalities.delete",
       "config": {
         "policies": []
       }

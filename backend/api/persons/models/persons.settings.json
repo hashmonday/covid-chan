@@ -25,6 +25,12 @@
     "reference_number": {
       "type": "uid",
       "required": true
+    },
+    "nationality": {
+      "model": "nationalities"
+    },
+    "employer_name": {
+      "type": "string"
     }
   }
 }

@@ -1,8 +1,9 @@
 {
   "kind": "collectionType",
-  "collectionName": "covid_tests",
+  "collectionName": "locations",
   "info": {
-    "name": "CovidTests"
+    "name": "Locations",
+    "description": ""
   },
   "options": {
     "increments": true,
@@ -10,15 +11,18 @@
     "draftAndPublish": true
   },
   "attributes": {
-    "person": {
-      "model": "persons"
+    "location_name": {
+      "type": "string",
+      "required": true
     },
     "appointment_date": {
       "type": "date",
       "required": true
     },
-    "queue": {
-      "type": "integer"
+    "active": {
+      "type": "boolean",
+      "default": false,
+      "required": true
     }
   }
 }

@@ -1,0 +1,33 @@
+{
+  "kind": "collectionType",
+  "collectionName": "services",
+  "info": {
+    "name": "Services",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "person": {
+      "model": "persons"
+    },
+    "location": {
+      "model": "locations"
+    },
+    "queue": {
+      "type": "integer",
+      "required": true,
+      "min": 1,
+      "max": 9999
+    },
+    "check_in": {
+      "type": "string"
+    },
+    "has_specimen": {
+      "type": "string"
+    }
+  }
+}

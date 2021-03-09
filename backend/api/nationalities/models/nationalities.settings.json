@@ -1,0 +1,17 @@
+{
+  "kind": "collectionType",
+  "collectionName": "nationalities",
+  "info": {
+    "name": "Nationalities"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "name": {
+      "type": "string"
+    }
+  }
+}
