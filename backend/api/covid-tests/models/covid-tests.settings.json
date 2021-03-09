@@ -1,0 +1,24 @@
+{
+  "kind": "collectionType",
+  "collectionName": "covid_tests",
+  "info": {
+    "name": "CovidTests"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "person": {
+      "model": "persons"
+    },
+    "appointment_date": {
+      "type": "date",
+      "required": true
+    },
+    "queue": {
+      "type": "integer"
+    }
+  }
+}

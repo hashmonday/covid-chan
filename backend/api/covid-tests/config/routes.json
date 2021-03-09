@@ -2,48 +2,48 @@
   "routes": [
     {
       "method": "GET",
-      "path": "/foreign-workers",
-      "handler": "foreign-workers.find",
+      "path": "/covid-tests",
+      "handler": "covid-tests.find",
       "config": {
         "policies": []
       }
     },
     {
       "method": "GET",
-      "path": "/foreign-workers/count",
-      "handler": "foreign-workers.count",
+      "path": "/covid-tests/count",
+      "handler": "covid-tests.count",
       "config": {
         "policies": []
       }
     },
     {
       "method": "GET",
-      "path": "/foreign-workers/:id",
-      "handler": "foreign-workers.findOne",
+      "path": "/covid-tests/:id",
+      "handler": "covid-tests.findOne",
       "config": {
         "policies": []
       }
     },
     {
       "method": "POST",
-      "path": "/foreign-workers",
-      "handler": "foreign-workers.create",
+      "path": "/covid-tests",
+      "handler": "covid-tests.create",
       "config": {
         "policies": []
       }
     },
     {
       "method": "PUT",
-      "path": "/foreign-workers/:id",
-      "handler": "foreign-workers.update",
+      "path": "/covid-tests/:id",
+      "handler": "covid-tests.update",
       "config": {
         "policies": []
       }
     },
     {
       "method": "DELETE",
-      "path": "/foreign-workers/:id",
-      "handler": "foreign-workers.delete",
+      "path": "/covid-tests/:id",
+      "handler": "covid-tests.delete",
       "config": {
         "policies": []
       }

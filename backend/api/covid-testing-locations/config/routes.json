@@ -1,0 +1,52 @@
+{
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/covid-testing-locations",
+      "handler": "covid-testing-locations.find",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/covid-testing-locations/count",
+      "handler": "covid-testing-locations.count",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/covid-testing-locations/:id",
+      "handler": "covid-testing-locations.findOne",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/covid-testing-locations",
+      "handler": "covid-testing-locations.create",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/covid-testing-locations/:id",
+      "handler": "covid-testing-locations.update",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/covid-testing-locations/:id",
+      "handler": "covid-testing-locations.delete",
+      "config": {
+        "policies": []
+      }
+    }
+  ]
+}

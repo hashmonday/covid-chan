@@ -1,8 +1,9 @@
 {
   "kind": "collectionType",
-  "collectionName": "foreign_workers",
+  "collectionName": "persons",
   "info": {
-    "name": "Foreign Workers"
+    "name": "persons",
+    "description": ""
   },
   "options": {
     "increments": true,
@@ -10,25 +11,20 @@
     "draftAndPublish": true
   },
   "attributes": {
-    "reference_number": {
-      "type": "uid",
-      "maxLength": 13,
-      "minLength": 13,
-      "required": true
-    },
     "title": {
       "model": "titles"
     },
     "first_name": {
       "type": "string",
-      "regex": "^[A-Z a-z]+$",
-      "unique": false,
       "required": true
     },
     "last_name": {
       "type": "string",
-      "required": true,
-      "regex": "^[A-Z a-z]+$"
+      "required": true
+    },
+    "reference_number": {
+      "type": "uid",
+      "required": true
     }
   }
 }

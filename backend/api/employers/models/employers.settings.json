@@ -2,8 +2,7 @@
   "kind": "collectionType",
   "collectionName": "employers",
   "info": {
-    "name": "Employers",
-    "description": ""
+    "name": "Employers"
   },
   "options": {
     "increments": true,
@@ -11,28 +10,7 @@
     "draftAndPublish": true
   },
   "attributes": {
-    "identification_number": {
-      "type": "uid",
-      "maxLength": 13,
-      "minLength": 13,
-      "required": true
-    },
-    "title": {
-      "model": "titles"
-    },
-    "first_name": {
-      "type": "string"
-    },
-    "last_name": {
-      "type": "string"
-    },
-    "date_of_birth": {
-      "type": "date"
-    },
-    "address": {
-      "type": "text"
-    },
-    "telephone_number": {
+    "name": {
       "type": "string"
     }
   }
