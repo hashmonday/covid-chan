@@ -31,6 +31,9 @@
     },
     "employer_name": {
       "type": "string"
+    },
+    "employer": {
+      "model": "employers"
     }
   }
 }

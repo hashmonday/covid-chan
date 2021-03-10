@@ -167,14 +167,58 @@
                 </div>
 
                 <div class="col-span-6 sm:col-span-2">
-                  <label for="employerName" class="block text-sm font-medium text-gray-700">นายจ้าง</label>
-                  <input type="text"
-                         v-model="employerName"
-                         id="employerName"
-                         autocomplete="off"
-                         :class="viewMode ? 'bg-gray-100' : ''"
-                         class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                         :disabled="viewMode">
+                  <label for="employerName" class="block text-sm font-medium text-gray-700">
+                    นายจ้าง
+                  </label>
+                  <div class="mt-1 relative">
+                    <input type="text"
+                           v-on:keyup.enter="findEmployer()"
+                           v-model="employerName"
+                           ref="employerName"
+                           id="employerName"
+                           autocomplete="off"
+                           :class="viewMode ? 'bg-gray-100' : ''"
+                           class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                           :disabled="viewMode">
+
+                    <transition
+                      enter-active-class=""
+                      enter-from-class=""
+                      enter-to-class=""
+                      leave-active-class="transition ease-in duration-100"
+                      leave-from-class="opacity-100"
+                      leave-to-class="opacity-0"
+                    >
+                    <div class="absolute mt-1 w-full rounded-md bg-white shadow-lg" v-show="employers.length > 0">
+                      <ul tabindex="-1" role="listbox" aria-labelledby="listbox-label" aria-activedescendant="listbox-option-0" class="max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
+                        <!--
+                          Select option, manage highlight styles based on mouseenter/mouseleave and keyboard navigation.
+
+                          Highlighted: "text-white bg-indigo-600", Not Highlighted: "text-gray-900"
+                        -->
+                        <li id="listbox-option-0"
+                            v-for="employer in employers"
+                            :key="employer.id"
+                            v-on:click="employerName = employer.name; employers = []"
+                            role="option"
+                            class="text-gray-900 cursor-default select-none relative py-2 pl-3 pr-9">
+                          <!-- Selected: "font-semibold", Not Selected: "font-normal" -->
+                          <span class="font-normal block truncate">
+                            {{employer.name}}
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
+                    </transition>
+                  </div>
+                </div>
+
+                <div class="col-span-6 sm:col-span-2" v-show="employers.length === 0 && showCreateEmployerBtn">
+                  <button type="button"
+                          v-on:click="createEmployer()"
+                          class="mt-6 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    เพิ่มชื่อนายจ้าง
+                  </button>
                 </div>
               </div>
             </div>
@@ -300,7 +344,6 @@
       </div>
     </div>
 
-
     <!-- SERVICE MODAL -->
     <div class="fixed z-10 inset-0 overflow-y-auto" v-show="createServiceMode">
       <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
@@ -390,6 +433,7 @@
                 </div>
               </div>
             </div>
+
             <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
               <button type="button"
                       v-on:click="createService"
@@ -563,6 +607,7 @@ export default {
       lastName: '',
       nationalities: [],
       nationality: '',
+      employers: [],
       employerName: '',
       title2: '',
       firstName2: '',
@@ -577,6 +622,7 @@ export default {
       serviceId: '',
       errorServiceModal: '',
       confirmCancelModal: false,
+      showCreateEmployerBtn: false
     }
   },
 
@@ -642,10 +688,6 @@ export default {
       return this.mode === 'create service'
     },
 
-    editServiceMode() {
-      return this.mode === 'edit service'
-    },
-
     blankMode() {
       return this.mode !== ''
     },
@@ -698,6 +740,22 @@ export default {
           console.log(err)
         })
       }
+    },
+
+    findEmployer: async function () {
+      this.showCreateEmployerBtn = true
+      await this.$strapi.find('employers', {name_contains: this.employerName}).then(result => {
+        this.employers = result
+        if (this.employers.length > 0) {
+          this.showCreateEmployerBtn = false
+        }
+      })
+    },
+
+    createEmployer: async function () {
+      await this.$strapi.create('employers', {name: this.employerName}).then(result => {
+        this.showCreateEmployerBtn = false
+      })
     },
 
     createPerson: async function () {
@@ -906,6 +964,7 @@ export default {
         return false
       }
     },
+
     confirmCancel: function () {
       if (this.editMode) {
         this.mode = 'view'
@@ -920,6 +979,7 @@ export default {
         this.confirmCancelModal = false
       }
     },
+
     cancel: function () {
       if (this.editMode && !this.hasChanged()) {
         this.mode = 'view'
