@@ -744,7 +744,6 @@ export default {
         await this.$strapi.find('services', {queue: q}).then(async result => {
           this.services = []
           if (result.length === 1) {
-            console.log(result)
             this.mode = 'view'
             this.successMessages = ''
             this.errorMessages = []
