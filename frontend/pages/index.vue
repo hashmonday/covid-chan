@@ -739,6 +739,25 @@ export default {
         }).catch(err => {
           console.log(err)
         })
+      } else if(/^q[0-9]{1,4}$/.test(num)) {
+        let q = num.substring(1)
+        await this.$strapi.find('services', {queue: q}).then(async result => {
+          this.services = []
+          if (result.length === 1) {
+            console.log(result)
+            this.mode = 'view'
+            this.successMessages = ''
+            this.errorMessages = []
+            this.id = result[0]['person']['id']
+            this.title = result[0]['person']['title']
+            this.firstName = result[0]['person']['first_name']
+            this.lastName = result[0]['person']['last_name']
+            this.nationality = result[0]['person']['nationality']
+            this.services = await this.$strapi.find('services', {person: result[0]['person']['id'], location: this.locationId})
+          }
+        }).catch(err => {
+          console.log(err)
+        })
       }
     },
 
