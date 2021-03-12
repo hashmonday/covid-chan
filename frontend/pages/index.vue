@@ -753,6 +753,7 @@ export default {
             this.lastName = result[0]['person']['last_name']
             this.refNum = result[0]['person']['reference_number']
             this.nationality = result[0]['person']['nationality']
+            this.employerName = result[0]['person']['employer_name']
             this.services = await this.$strapi.find('services', {person: result[0]['person']['id'], location: this.locationId})
           }
         }).catch(err => {
