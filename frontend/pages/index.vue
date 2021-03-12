@@ -842,6 +842,7 @@ export default {
       }
 
       if (this.dateOfBirth === '') {
+        console.log(this.dateOfBirth)
         this.errorMessages.push('โปรดระบุวันเดือนปีเกิด')
         a = false
       }
@@ -867,6 +868,7 @@ export default {
 
     updatePerson: async function () {
       let num = this.refNum
+      console.log(this.dateOfBirth)
       if (num.length === 13 && /[0-9]{13}/.test(num) && this.personValidation()) {
         await this.$strapi.find('persons', {reference_number: num}).then(async result => {
           if (result.length === 1) {
@@ -1048,24 +1050,26 @@ export default {
 
   watch: {
     dateOfBirth: function ()  {
-      let errMsg = 'วันเกิดมากกว่าวันปัจจุบัน กรุณาตรวจสอบใหม่อีกครั้ง'
-      let strDob = String(this.dateOfBirth)
-      let arrDob = strDob.split("-")
+      if (this.dateOfBirth !== '') {
+        let errMsg = 'วันเกิดมากกว่าวันปัจจุบัน กรุณาตรวจสอบใหม่อีกครั้ง'
+        let strDob = String(this.dateOfBirth)
+        let arrDob = strDob.split("-")
 
-      if (strDob.charAt(4) !== '-') {
-        arrDob[0] = `000${strDob.charAt(4)}`
-        strDob = `${arrDob[0]}-${arrDob[1]}-${arrDob[2]}`
-        this.dateOfBirth = strDob
-        this.$refs.dob.focus()
-      } else if (strDob.charAt(0) !== '0') {
-        if (this.$dayjs(strDob).format('YYYYMMDD') > this.$dayjs().format('YYYYMMDD')) {
-          if (this.errorMessages.indexOf(errMsg) === -1) {
-            this.errorMessages.push(errMsg)
+        if (strDob.charAt(4) !== '-') {
+          arrDob[0] = `000${strDob.charAt(4)}`
+          strDob = `${arrDob[0]}-${arrDob[1]}-${arrDob[2]}`
+          this.dateOfBirth = strDob
+          this.$refs.dob.focus()
+        } else if (strDob.charAt(0) !== '0') {
+          if (this.$dayjs(strDob).format('YYYYMMDD') > this.$dayjs().format('YYYYMMDD')) {
+            if (this.errorMessages.indexOf(errMsg) === -1) {
+              this.errorMessages.push(errMsg)
+            }
+            this.$refs.dob.focus()
+          } else {
+            this.errorMessages.splice(this.errorMessages.indexOf(errMsg), 1)
+            this.$refs.dob.focus()
           }
-          this.$refs.dob.focus()
-        } else {
-          this.errorMessages.splice(this.errorMessages.indexOf(errMsg), 1)
-          this.$refs.dob.focus()
         }
       }
     },
