@@ -153,9 +153,22 @@
                 </div>
 
                 <div class="col-span-6 sm:col-span-2">
+                  <label for="date_of_birth" class="block text-sm font-medium text-gray-700">วันเดือนปีเกิด (ค.ศ.)</label>
+                  <input type="date"
+                         v-model="dateOfBirth"
+                         id="date_of_birth"
+                         ref="dob"
+                         autocomplete="off"
+                         :class="viewMode ? 'bg-gray-100' : ''"
+                         class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                         :disabled="viewMode">
+                </div>
+
+                <div class="col-span-6 sm:col-span-2">
                   <label for="nationality" class="block text-sm font-medium text-gray-700">สัญชาติ</label>
                   <select v-model="nationality"
                           id="nationality"
+                          ref="nationality"
                           autocomplete="off"
                           :class="viewMode ? 'bg-gray-100' : ''"
                           class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
@@ -602,18 +615,23 @@ export default {
       id: '',
       refNum: '',
       titles: [],
+      nationalities: [],
+      employers: [],
+
       title: '',
       firstName: '',
       lastName: '',
-      nationalities: [],
+      dateOfBirth: '',
       nationality: '',
-      employers: [],
       employerName: '',
+
       title2: '',
       firstName2: '',
       lastName2: '',
+      dateOfBirth2: '',
       nationality2: '',
       employerName2: '',
+
       locationId: '',
       locationName: '',
       appointmentDate: '',
@@ -723,7 +741,9 @@ export default {
             this.title = result[0]['title']['id']
             this.firstName = result[0]['first_name']
             this.lastName = result[0]['last_name']
+            this.dateOfBirth = result[0]['date_of_birth']
             this.nationality = result[0]['nationality']['id']
+            this.employerName = result[0]['employer_name']
             this.services = await this.$strapi.find('services', {person: result[0]['id'], location: this.locationId})
           } else if (result.length === 0) {
             this.mode = 'create'
@@ -733,6 +753,7 @@ export default {
             this.title = ''
             this.firstName = ''
             this.lastName = ''
+            this.dateOfBirth = ''
             this.nationality = ''
             this.employerName = ''
           }
@@ -751,6 +772,7 @@ export default {
             this.title = result[0]['person']['title']
             this.firstName = result[0]['person']['first_name']
             this.lastName = result[0]['person']['last_name']
+            this.dateOfBirth = result[0]['person']['date_of_birth']
             this.refNum = result[0]['person']['reference_number']
             this.nationality = result[0]['person']['nationality']
             this.employerName = result[0]['person']['employer_name']
@@ -788,6 +810,7 @@ export default {
               title: this.title,
               first_name: this.firstName,
               last_name: this.lastName,
+              date_of_birth: this.dateOfBirth,
               nationality: this.nationality,
               employer_name: this.employerName
             }).then(result => {
@@ -799,6 +822,7 @@ export default {
               this.title = result['title']['id']
               this.firstName = result['first_name']
               this.lastName = result['last_name']
+              this.dateOfBirth = result['date_of_birth']
               this.nationality = result['nationality']['id']
               this.employerName = result['employer_name']
             }).catch(err => {
@@ -812,6 +836,7 @@ export default {
             this.title = result[0]['title']['id']
             this.firstName = result[0]['first_name']
             this.lastName = result[0]['last_name']
+            this.dateOfBirth = result['date_of_birth']
             this.nationality = result[0]['nationality']
             this.employerName = result['employer_name']
             this.services = await this.$strapi.find('services', {person: result[0]['id'], location: this.locationId})
@@ -849,6 +874,7 @@ export default {
       this.title2 = this.title
       this.firstName2 = this.firstName
       this.lastName2 = this.lastName
+      this.dateOfBirth2 = this.dateOfBirth
       this.nationality2 = this.nationality
       this.employerName2 = this.employerName
     },
@@ -863,6 +889,7 @@ export default {
               title: this.title,
               first_name: this.firstName,
               last_name: this.lastName,
+              date_of_birth: this.dateOfBirth,
               nationality: this.nationality,
               employer_name: this.employerName,
             }).then(async result => {
@@ -903,7 +930,7 @@ export default {
         person: this.id,
         location: this.locationId
       })
-      if (countService == 0) {
+      if (countService === 0) {
         await this.$strapi.find('services', {queue: this.queue, location: this.locationId}).then(async result => {
           if (result.length === 0) {
             await this.$strapi.create('services', {
@@ -959,7 +986,9 @@ export default {
       this.title = ''
       this.firstName = ''
       this.lastName = ''
+      this.dateOfBirth = ''
       this.nationality = ''
+      this.employerName = ''
       this.services = []
       this.errorServiceModal = ''
       this.serviceId = ''
@@ -978,7 +1007,8 @@ export default {
         this.firstName2 !== this.firstName ||
         this.lastName2 !== this.lastName ||
         this.nationality2 !== this.nationality ||
-        this.employerName2 !== this.employerName) {
+        this.employerName2 !== this.employerName ||
+        this.dateOfBirth2 !== this.dateOfBirth) {
         return true
       } else {
         return false
@@ -994,6 +1024,7 @@ export default {
         this.lastName = this.lastName2
         this.nationality = this.nationality2
         this.employerName = this.employerName2
+        this.dateOfBirth = this.dateOfBirth2
       } else {
         this.resetData()
         this.confirmCancelModal = false
@@ -1014,5 +1045,30 @@ export default {
       }
     }
   },
+
+  watch: {
+    dateOfBirth: function ()  {
+      let errMsg = 'วันเกิดมากกว่าวันปัจจุบัน กรุณาตรวจสอบใหม่อีกครั้ง'
+      let strDob = String(this.dateOfBirth)
+      let arrDob = strDob.split("-")
+
+      if (strDob.charAt(4) !== '-') {
+        arrDob[0] = `000${strDob.charAt(4)}`
+        strDob = `${arrDob[0]}-${arrDob[1]}-${arrDob[2]}`
+        this.dateOfBirth = strDob
+        this.$refs.dob.focus()
+      } else if (strDob.charAt(0) !== '0') {
+        if (this.$dayjs(strDob).format('YYYYMMDD') > this.$dayjs().format('YYYYMMDD')) {
+          if (this.errorMessages.indexOf(errMsg) === -1) {
+            this.errorMessages.push(errMsg)
+          }
+          this.$refs.dob.focus()
+        } else {
+          this.errorMessages.splice(this.errorMessages.indexOf(errMsg), 1)
+          this.$refs.dob.focus()
+        }
+      }
+    }
+  }
 }
 </script>
