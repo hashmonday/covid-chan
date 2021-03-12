@@ -756,7 +756,8 @@ export default {
         })
       } else if(/^q[0-9]{1,4}$/.test(num)) {
         let q = num.substring(1)
-        await this.$strapi.find('services', {queue: q}).then(async result => {
+
+        await this.$strapi.find('services', {queue: q, location: this.locationId}).then(async result => {
           this.services = []
           if (result.length === 1) {
             this.mode = 'view'
