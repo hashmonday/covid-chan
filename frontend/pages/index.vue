@@ -164,7 +164,7 @@
                          :disabled="viewMode">
                 </div>
 
-                <div class="col-span-6 sm:col-span-2">
+                <div class="col-span-6 sm:col-span-1">
                   <label for="nationality" class="block text-sm font-medium text-gray-700">สัญชาติ</label>
                   <select v-model="nationality"
                           id="nationality"
@@ -185,7 +185,7 @@
                   </label>
                   <div class="mt-1 relative">
                     <input type="text"
-                           v-on:keyup.enter="findEmployer()"
+                           v-on:keyup="findEmployer()"
                            v-model="employerName"
                            ref="employerName"
                            id="employerName"
@@ -209,9 +209,10 @@
 
                           Highlighted: "text-white bg-indigo-600", Not Highlighted: "text-gray-900"
                         -->
-                        <li id="listbox-option-0"
-                            v-for="employer in employers"
-                            :key="employer.id"
+                        <li
+                            v-for="(employer,index) in employers"
+                            :key="index"
+                            :id="`listbox-option-${index}`"
                             v-on:click="employerName = employer.name; employers = []"
                             role="option"
                             class="text-gray-900 cursor-default select-none relative py-2 pl-3 pr-9">
@@ -226,13 +227,6 @@
                   </div>
                 </div>
 
-                <div class="col-span-6 sm:col-span-2" v-show="employers.length === 0 && showCreateEmployerBtn">
-                  <button type="button"
-                          v-on:click="createEmployer()"
-                          class="mt-6 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    เพิ่มชื่อนายจ้าง
-                  </button>
-                </div>
               </div>
             </div>
           </div>
@@ -784,22 +778,6 @@ export default {
       }
     },
 
-    findEmployer: async function () {
-      this.showCreateEmployerBtn = true
-      await this.$strapi.find('employers', {name_contains: this.employerName}).then(result => {
-        this.employers = result
-        if (this.employers.length > 0) {
-          this.showCreateEmployerBtn = false
-        }
-      })
-    },
-
-    createEmployer: async function () {
-      await this.$strapi.create('employers', {name: String(this.employerName).trim()}).then(result => {
-        this.showCreateEmployerBtn = false
-      })
-    },
-
     createPerson: async function () {
       let num = this.refNum
       if (num.length === 13 && /[0-9]{13}/.test(num) && this.personValidation()) {
@@ -813,7 +791,7 @@ export default {
               date_of_birth: this.dateOfBirth,
               nationality: this.nationality,
               employer_name: String(this.employerName).trim()
-            }).then(result => {
+            }).then(async result => {
               this.mode = 'view'
               this.successMessages = 'ดำเนินการสร้างรายการสำเร็จ'
               this.errorMessages = []
@@ -825,6 +803,8 @@ export default {
               this.dateOfBirth = result['date_of_birth']
               this.nationality = result['nationality']['id']
               this.employerName = result['employer_name']
+              await this.$strapi.create('employers', {name: result['employer_name']})
+              this.employers = []
             }).catch(err => {
               console.log(err)
             })
@@ -839,6 +819,7 @@ export default {
             this.dateOfBirth = result['date_of_birth']
             this.nationality = result[0]['nationality']
             this.employerName = result['employer_name']
+            this.employers = []
             this.services = await this.$strapi.find('services', {person: result[0]['id'], location: this.locationId})
           }
         }).catch(err => {
@@ -860,11 +841,16 @@ export default {
         a = false
       }
 
+      if (this.dateOfBirth === '') {
+        this.errorMessages.push('โปรดระบุวันเดือนปีเกิด')
+        a = false
+      }
+
       if (this.nationality === '') {
         this.errorMessages.push('โปรดระบุสัญชาติ')
         a = false
       }
-      console.log(a)
+
       return a
     },
 
@@ -896,6 +882,7 @@ export default {
               this.mode = 'view'
               this.successMessages = 'ดำเนินการแก้ไขรายการสำเร็จ'
               this.errorMessages = []
+              this.employers = []
               this.id = result['id']
               this.refNum = result['reference_number']
               this.title = result['title']['id']
@@ -903,6 +890,7 @@ export default {
               this.lastName = result['last_name']
               this.nationality = result['nationality']['id']
               this.employerName = result['employer_name']
+              await this.$strapi.create('employers', {name: result['employer_name']})
               this.services = await this.$strapi.find('services', {person: this.id, location: this.locationId})
             }).catch(err => {
               console.log(err)
@@ -990,6 +978,7 @@ export default {
       this.nationality = ''
       this.employerName = ''
       this.services = []
+      this.employers = []
       this.errorServiceModal = ''
       this.serviceId = ''
       this.confirmCancelModal = false
@@ -1003,16 +992,12 @@ export default {
     },
 
     hasChanged: function () {
-      if (this.title2 !== this.title ||
+      return this.title2 !== this.title ||
         this.firstName2 !== this.firstName ||
         this.lastName2 !== this.lastName ||
         this.nationality2 !== this.nationality ||
         this.employerName2 !== this.employerName ||
-        this.dateOfBirth2 !== this.dateOfBirth) {
-        return true
-      } else {
-        return false
-      }
+        this.dateOfBirth2 !== this.dateOfBirth;
     },
 
     confirmCancel: function () {
@@ -1025,6 +1010,7 @@ export default {
         this.nationality = this.nationality2
         this.employerName = this.employerName2
         this.dateOfBirth = this.dateOfBirth2
+        this.employers = []
       } else {
         this.resetData()
         this.confirmCancelModal = false
@@ -1043,7 +1029,21 @@ export default {
       } else {
         this.resetData()
       }
-    }
+    },
+
+    findEmployer: async function () {
+      if (this.employerName.length >= 3 && (this.editMode || this.createMode)) {
+        await this.$strapi.find('employers', {name_contains: this.employerName}).then(result => {
+          this.employers = result
+        })
+      }
+
+      if(this.employerName.length < 3) {
+        this.employers = []
+      } else if(this.employers.find(({name})=> name === this.employerName)) {
+        this.employers = []
+      }
+    },
   },
 
   watch: {
@@ -1069,8 +1069,7 @@ export default {
         }
       }
     },
-
-    employerName: function () {
+    employerName: function ()  {
       this.employerName = String(this.employerName).replace(/\s\s+/g, ' ');
     }
   }
