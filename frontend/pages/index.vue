@@ -795,7 +795,7 @@ export default {
     },
 
     createEmployer: async function () {
-      await this.$strapi.create('employers', {name: this.employerName}).then(result => {
+      await this.$strapi.create('employers', {name: String(this.employerName).trim()}).then(result => {
         this.showCreateEmployerBtn = false
       })
     },
@@ -808,11 +808,11 @@ export default {
             await this.$strapi.create('persons', {
               reference_number: num,
               title: this.title,
-              first_name: this.firstName,
-              last_name: this.lastName,
+              first_name: String(this.firstName).trim(),
+              last_name: String(this.lastName).trim(),
               date_of_birth: this.dateOfBirth,
               nationality: this.nationality,
-              employer_name: this.employerName
+              employer_name: String(this.employerName).trim()
             }).then(result => {
               this.mode = 'view'
               this.successMessages = 'ดำเนินการสร้างรายการสำเร็จ'
@@ -887,11 +887,11 @@ export default {
             await this.$strapi.update('persons', this.id, {
               reference_number: num,
               title: this.title,
-              first_name: this.firstName,
-              last_name: this.lastName,
+              first_name: String(this.firstName).trim(),
+              last_name: String(this.lastName).trim(),
               date_of_birth: this.dateOfBirth,
               nationality: this.nationality,
-              employer_name: this.employerName,
+              employer_name: String(this.employerName).trim(),
             }).then(async result => {
               this.mode = 'view'
               this.successMessages = 'ดำเนินการแก้ไขรายการสำเร็จ'
@@ -1068,6 +1068,10 @@ export default {
           this.$refs.dob.focus()
         }
       }
+    },
+
+    employerName: function () {
+      this.employerName = String(this.employerName).replace(/\s\s+/g, ' ');
     }
   }
 }
