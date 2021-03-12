@@ -804,7 +804,9 @@ export default {
               this.dateOfBirth = result['date_of_birth']
               this.nationality = result['nationality']['id']
               this.employerName = result['employer_name']
-              await this.$strapi.create('employers', {name: result['employer_name']})
+              if (await this.$strapi.count('employers', {name: result['employer_name']}) === 0) {
+                await this.$strapi.create('employers', {name: result['employer_name']})
+              }
               this.employers = []
             }).catch(err => {
               console.log(err)
@@ -893,7 +895,9 @@ export default {
               this.lastName = result['last_name']
               this.nationality = result['nationality']['id']
               this.employerName = result['employer_name']
-              await this.$strapi.create('employers', {name: result['employer_name']})
+              if (await this.$strapi.count('employers', {name: result['employer_name']}) === 0) {
+                await this.$strapi.create('employers', {name: result['employer_name']})
+              }
               this.services = await this.$strapi.find('services', {person: this.id, location: this.locationId})
             }).catch(err => {
               console.log(err)
