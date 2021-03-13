@@ -724,7 +724,7 @@ export default {
   methods: {
     getPerson: async function () {
       let num = this.refNum
-      if (num.length === 13 && /[0-9]{13}/.test(num)) {
+      if ((num.length === 13 && /[0-9]{13}/.test(num)) || /^N[0-9]{8}$/.test(num)) {
         await this.$strapi.find('persons', {reference_number: num}).then(async result => {
           this.services = []
           if (result.length === 1) {
@@ -777,11 +777,11 @@ export default {
           console.log(err)
         })
       }
-    },
+  },
 
     createPerson: async function () {
       let num = this.refNum
-      if (num.length === 13 && /[0-9]{13}/.test(num) && this.personValidation()) {
+      if (((num.length === 13 && /[0-9]{13}/.test(num)) || /^N[0-9]{8}$/.test(num)) && this.personValidation()) {
         await this.$strapi.find('persons', {reference_number: num}).then(async result => {
           if (result.length === 0) {
             await this.$strapi.create('persons', {
@@ -871,8 +871,7 @@ export default {
 
     updatePerson: async function () {
       let num = this.refNum
-      console.log(this.dateOfBirth)
-      if (num.length === 13 && /[0-9]{13}/.test(num) && this.personValidation()) {
+      if (((num.length === 13 && /[0-9]{13}/.test(num)) || /^N[0-9]{8}$/.test(num)) && this.personValidation()) {
         await this.$strapi.find('persons', {reference_number: num}).then(async result => {
           if (result.length === 1) {
             await this.$strapi.update('persons', this.id, {
