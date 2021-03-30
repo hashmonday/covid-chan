@@ -134,6 +134,7 @@
                   <label for="first_name" class="block text-sm font-medium text-gray-700">ชื่อ</label>
                   <input type="text"
                          v-model="firstName"
+                         @input="firstName = $event.target.value.toUpperCase()"
                          id="first_name"
                          autocomplete="off"
                          :class="viewMode ? 'bg-gray-100' : ''"
@@ -145,6 +146,7 @@
                   <label for="last_name" class="block text-sm font-medium text-gray-700">นามสกุล</label>
                   <input type="text"
                          v-model="lastName"
+                         @input="lastName = $event.target.value.toUpperCase()"
                          id="last_name"
                          autocomplete="off"
                          :class="viewMode ? 'bg-gray-100' : ''"
@@ -1039,7 +1041,7 @@ export default {
 
     findEmployer: async function () {
       if (this.employerName.length >= 3 && (this.editMode || this.createMode)) {
-        await this.$strapi.find('employers', {name_contains: this.employerName}).then(result => {
+        await this.$strapi.find('employers', {name_contains: this.employerName,_sort: 'id:DESC'}).then(result => {
           this.employers = result
         })
       }
